@@ -6,7 +6,7 @@ Makes UI backgrounds translucent (#000-based rgba) so the macOS desktop shows th
 
 ## Screenshots
 
-(TODO)
+![Screenshot of the main editing screen](screenshots/screenshot-1.png)
 
 ## Requirements
 
