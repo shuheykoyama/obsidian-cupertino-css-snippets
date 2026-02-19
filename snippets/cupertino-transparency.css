@@ -1,0 +1,141 @@
+/* @settings
+name: Cupertino Transparency
+id: cupertino-transparency
+settings:
+  -
+    id: ct-opacity
+    title: Background Opacity
+    description: 0 = fully transparent, 1 = opaque
+    type: variable-number-slider
+    default: 0.5
+    min: 0
+    max: 1
+    step: 0.05
+    format: ""
+*/
+
+/* Cupertino Dark: #000 Translucent
+   全UI要素の背景変数を transparent にし、デスクトップが透けて見えるようにする。
+   --workspace-background-translucent で rgba(0,0,0,opacity) の半透明レイヤーを提供し、
+   各 UI 要素は transparent または個別の rgba 値で透過度を制御する */
+
+:root {
+  --ct-opacity: 0.5;
+}
+
+/* --- 背景変数 → transparent --- */
+body:is(.mod-macos, .adaptive-mode-off):not(.is-mobile).theme-dark {
+  --background-primary: transparent;
+  --background-primary-alt: transparent;
+  --background-secondary: transparent;
+  --background-secondary-alt: transparent;
+  --workspace-background-translucent: rgba(0, 0, 0, var(--ct-opacity));
+  --color-base-25: #1c1c1e; /* 非フォーカス時にテーマが使う色を #000 パレットに */
+  /* モーダル・メニュー・コマンドパレット: 不透明 #000 背景 */
+  --modal-background: #000000;
+  --suggestion-background: #000000;
+  --menu-background: #000000;
+}
+
+/* --- 非フォーカス時: 不透明に切り替え（デフォルト同様） --- */
+/* workspace bg を --color-base-25 (#1c1c1e) と同色にすることで
+   テーマのタブフラット化ルール (bg = --color-base-25) と溶け込む。
+   メインコンテンツは rgba レイヤーでやや暗くなり色差を保つ */
+body:is(.mod-macos, .adaptive-mode-off):not(.is-mobile):not(.is-focused).theme-dark {
+  --workspace-background-translucent: #1c1c1e;
+}
+
+/* --- 非フォーカス時: メインコンテンツを軽めに暗く --- */
+/* テーマの rgba(0,0,0,0.75) は暗すぎるので軽減 */
+body:is(.mod-macos, .adaptive-mode-off):not(.is-phone):not(.is-focused) .mod-root .workspace-tab-container {
+  background-color: rgba(0, 0, 0, 0.25) !important;
+}
+
+/* --- フォーカス時: メインコンテンツとアクティブタブ --- */
+/* テーマの rgba(from transparent r g b / 75%) → rgba(0,0,0,0.75) は暗すぎる。
+   より透過する値に上書きし、タブバーとの色差は維持 */
+body:is(.mod-macos, .adaptive-mode-off):not(.is-phone).is-focused .mod-root .workspace-tab-container {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+body:is(.mod-macos, .adaptive-mode-off):not(.is-phone).is-focused .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header.is-active {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+/* --- フォーカス時: 左サイドバー --- */
+/* テーマは rgba(from --bg-primary r g b / 50%) = rgba(0,0,0,0.5) で
+   メインコンテンツ(0.3)より濃くなる。デフォルトの比率(メイン75:サイドバー50=3:2)に
+   合わせてサイドバーを 0.2 に軽減 → メイン(0.3) > サイドバー(0.2) */
+body:is(.mod-macos, .adaptive-mode-off):not(.is-mobile).is-focused .mod-sidedock.mod-left-split {
+  background-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+/* --- vault名ポップアップ: 背景を復元 --- */
+/* テーマの ::before は background-color: var(--background-secondary) を使うが、
+   body で transparent にしたため背景が消える。
+   セレクタの特異性をテーマ(5クラス)以上にして上書き */
+body:is(.mod-macos, .adaptive-mode-off):not(.is-mobile).theme-dark .mod-sidedock .workspace-sidedock-vault-profile::before {
+  background-color: #000000;
+}
+
+/* --- Thino ビュー内: 派生変数の上書き --- */
+/* --background-* は body から transparent を継承するが、
+   Thino の --memos-* / --thino-* 変数は body レベルで var(--background-*) として
+   計算済み(= transparent)のため、このスコープで明示的に上書きが必要。
+   カード・検索バーはメインエリアと同じ rgba(0,0,0,0.3)、それ以外は transparent */
+body:is(.mod-macos, .adaptive-mode-off):not(.is-mobile).theme-dark div[data-type="thino_view"] {
+  /* Thino の --memos-* 変数: カード・検索バーはメインエリアと同じ透過度 */
+  --memos-memo-bg: rgba(0, 0, 0, 0.3);
+  --memos-bg-searchbar-lightgray: rgba(0, 0, 0, 0.3);
+  /* Thino の --thino-* 変数 */
+  --thino-background-primary: transparent;
+  --thino-background-primary-alt: transparent;
+  --thino-background-secondary: transparent;
+  --thino-layout-color-primary: transparent;
+  --thino-layout-color-secondary: transparent;
+  --thino-modern-primary: transparent;
+  --thino-modern-secondary: transparent;
+}
+
+/* --- Thino エディタ内部: 二重背景を防止 --- */
+/* .memo-editor-wrapper と .memo-editor の両方が --memos-memo-bg を持つため
+   rgba が二重に重なる。内側を transparent にして外枠のみ背景を持たせる */
+body:is(.mod-macos, .adaptive-mode-off):not(.is-mobile).theme-dark div[data-type="thino_view"] .memo-editor-wrapper > .memo-editor {
+  background-color: transparent !important;
+}
+
+/* --- Thino 検索バーホバー時ドロップダウン: 不透明背景 --- */
+/* .quickly-action-container は --memos-memo-bg を参照するが、
+   エディタカード(半透明)と共有されるため直接指定で不透明にする */
+body:is(.mod-macos, .adaptive-mode-off):not(.is-mobile).theme-dark div[data-type="thino_view"] .quickly-action-container {
+  background-color: #000000;
+}
+
+/* --- Thino 内サイドバー: 不透明背景 --- */
+/* デスクトップ版 .memos-sidebar-wrapper には background-color がないため、
+   カスタムスニペットで親が透過していると背景が抜ける。不透明な #000 背景を設定 */
+body:is(.mod-macos, .adaptive-mode-off):not(.is-mobile).theme-dark div[data-type="thino_view"] .memos-sidebar-wrapper {
+  background-color: #000000;
+}
+
+/* --- モーダル内: CSS変数を #000 パレットに復元 --- */
+/* body で transparent にした変数を .modal スコープで実色に戻す。
+   テーマの既存ルール（枠=--bg-primary, 左ナビ=rgba(from --bg-primary r g b/75%),
+   右コンテンツ=transparent→枠色が透ける）がそのまま正しく機能する。
+   --modal-background は body レベルで #000000 に設定済み。
+   --setting-items-background も再宣言して設定項目カードの背景を復元 */
+body:is(.mod-macos, .adaptive-mode-off):not(.is-mobile).theme-dark .modal {
+  --background-primary: #000000;
+  --background-primary-alt: #1c1c1e;
+  --background-secondary: #1c1c1e;
+  --background-secondary-alt: #2c2c2e;
+  --setting-items-background: var(--background-primary-alt);
+}
+
+/* --- コマンドパレット (.prompt): 不透明 #000 背景 --- */
+/* Cupertino テーマが body .prompt に background-color: var(--background-secondary) を
+   直接指定するため、変数の上書きだけでは効かない。直接背景色を設定 */
+body:is(.mod-macos, .adaptive-mode-off):not(.is-mobile).theme-dark .prompt {
+  background-color: #000000;
+}
+

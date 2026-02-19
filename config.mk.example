@@ -1,0 +1,5 @@
+# Copy this file to config.mk and edit with your vault path.
+# config.mk is gitignored.
+
+# Path to your Obsidian vault's snippets directory
+VAULT_SNIPPETS = $(HOME)/path/to/your vault/.obsidian/snippets

@@ -1,0 +1,11 @@
+/* Thino サイドバーオーバーフロー防止 */
+
+/* サイドバー内の workspace-leaf をクリップ */
+.mod-sidedock .workspace-leaf:has([data-type="thino_view"]) {
+  overflow: hidden !important;
+}
+
+/* Thino コンテンツ自体のオーバーフロー防止 */
+.workspace-leaf-content[data-type="thino_view"] {
+  overflow: hidden;
+}
