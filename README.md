@@ -1,6 +1,6 @@
 # Obsidian Cupertino CSS Snippets
 
-CSS snippets for the [Cupertino](https://github.com/aaaaalexis/obsidian-cupertino) theme
+CSS snippets for the **[Cupertino](https://github.com/aaaaalexis/obsidian-cupertino)** theme
 with macOS translucent window support.
 Makes UI backgrounds translucent (#000-based rgba) so the macOS desktop shows through.
 
@@ -10,15 +10,15 @@ Makes UI backgrounds translucent (#000-based rgba) so the macOS desktop shows th
 
 ## Requirements
 
-- Obsidian desktop (macOS)
+- [Obsidian](https://obsidian.md/) desktop (macOS) >= **1.7.7**
 - [Cupertino](https://github.com/aaaaalexis/obsidian-cupertino) theme
-- Settings → Appearance → Translucent window: ON
+- Settings -> Appearance -> Translucent window: ON
 - Dark mode
 
 ## Installation
 
 1. Copy CSS files from `snippets/` to your vault's `.obsidian/snippets/`
-2. Settings → Appearance → CSS snippets → enable them
+2. Settings -> Appearance -> CSS snippets -> enable them
 
 ## Snippets
 
@@ -45,9 +45,13 @@ If you want to sync these snippets with your local Obsidian vault:
 
 1. `cp config.mk.example config.mk` and edit `VAULT_SNIPPETS` to your vault's snippets path
 2. `make install-hooks`
-3. Edit CSS in your vault → `git commit` syncs automatically via pre-commit hook
-4. After `git pull` → `make deploy` to copy back to your vault
+3. Edit CSS in your vault -> `git commit` syncs automatically via pre-commit hook
+4. After `git pull` -> `make deploy` to copy back to your vault
 
-## License
+## Credits
 
-MIT
+- **@aaaaalexis** - **[Cupertino](https://github.com/aaaaalexis/obsidian-cupertino)**: Base theme
+
+## Licensing
+
+This project is licensed under the [MIT license](LICENSE).
